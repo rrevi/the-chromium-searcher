@@ -8,7 +8,7 @@ The following set of chronological events triggered and inspired the creation of
 3. The `ag` tool impressed me so much and was such a good example of how modern software needs to be developed to better use the multiple cores that modern day CPUs have, that I wrote a [blog post](https://rrevi.github.io/about-the-silver-searcher) about it!
 4. I was intrigued enough about both The Silver Searcher and Ruby's new concurrency features in version 3.0+, that I decided to write the equilant of the former in in the latter.
 
-This is all to say that this project is an **EDUCATIONAL** endevour of my part, to mimic The Silver Searcher tool using the Ruby language new concurrency feaures (in version 3.0+).
+This is all to say that this project is an **EDUCATIONAL** endeavor of my part, to mimic The Silver Searcher tool using the Ruby language new concurrency feaures (in version 3.0+).
 
 # What's in a name?
 In a Ruby gemstone, Chromium is the element that causes the gemstone to radiate the color red. The `cr` executable command is the element symbol for the Chromium element.
