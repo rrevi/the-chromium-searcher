@@ -1,4 +1,4 @@
-# the-chromium-searcher
+# The Chromium Searcher
 A text file searching tool like The Silver Searcher, but in Ruby
 
 # About this project
