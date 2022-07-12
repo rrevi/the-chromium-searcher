@@ -88,10 +88,7 @@ end
 
 def ractor_search(search_term, files, skip_output)
     files.each do |file|
-        r = Ractor.new do
-            file_in_ractor = receive
-            search_term_in_ractor = receive
-            skip_outp = receive
+        Ractor.new(file, search_term, skip_output) do |file_in_ractor, search_term_in_ractor, skip_outp|
             if File.file? file_in_ractor
                 # we don't re-use the mehod search_in_file here
                 # because since every Ractor instance is in it's own thread
@@ -103,12 +100,8 @@ def ractor_search(search_term, files, skip_output)
                 end
             end
         end
-        r.send(file)
-        r.send(search_term)
-        r.send(skip_output)
         # notice, not using the Ractor take command here
         # as we are not depending on the Ractor object/thread to return any value for us to use here
-        # and additionally, by not waiting on the Ractor object/thread to finish, the performance is better (basic I/O if you know what I mean)
     end
 end
 
