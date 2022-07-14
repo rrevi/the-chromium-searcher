@@ -18,7 +18,7 @@ search_method_options = {
 option_parser = OptionParser.new do |opts|
     opts.banner = "Usage: cr.rb [options] search_term search_directory_path"
 
-    opts.on('-r', '--recursive', 'Recursively search in files in sub-directories') do
+    opts.on('-r', '--recursive', 'Recursively search files in sub-directories') do
         options[:recursive] = true
     end
 
@@ -26,7 +26,7 @@ option_parser = OptionParser.new do |opts|
         options[:method] = method
     end
 
-    opts.on('--skip-output', 'Do not print to stdout the results of the search (this option was made to benchmarking purposes)') do
+    opts.on('--skip-output', 'Do not print to stdout the results of the search (this option is for benchmark runs)') do
         options[:skip_output] = true
     end
 
