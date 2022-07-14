@@ -87,31 +87,25 @@ end
 
 def serial_search(search_term, files, skip_output)
     files.each do |file|
-        if File.file? file
-           search_in_file search_term, file, skip_output
-        end
+        search_in_file search_term, file, skip_output
     end
 end
 
 def fiber_search(search_term, file, skip_output)
     Async do |task|
-        if File.file? file
-            search_in_file search_term, file, skip_output
-        end
+        search_in_file search_term, file, skip_output
     end
 end
 
 def ractor_search(search_term, files, skip_output)
     files.each do |file|
         Ractor.new(file, search_term, skip_output) do |file_in_ractor, search_term_in_ractor, skip_outp|
-            if File.file? file_in_ractor
-                # we don't re-use the mehod search_in_file here
-                # because since every Ractor instance is in it's own thread
-                # we cannot access data outside of said thread (like the other thread where main is in)
-                File.readlines(file_in_ractor).each do |line|
-                    if line.include? search_term_in_ractor
-                        puts "#{file_in_ractor}: #{line}" unless skip_outp
-                    end
+            # we don't re-use the mehod search_in_file here
+            # because since every Ractor instance is in it's own thread
+            # we cannot access data outside of said thread (like the other thread where main is in)
+            File.readlines(file_in_ractor).each do |line|
+                if line.include? search_term_in_ractor
+                    puts "#{file_in_ractor}: #{line}" unless skip_outp
                 end
             end
         end
