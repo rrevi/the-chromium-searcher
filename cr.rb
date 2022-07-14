@@ -62,6 +62,21 @@ else
     files_to_search_in = [arguments[:search_directory_path]]
 end
 
+def ignore_file?(file)
+  skip_locations = ["bin/", "tmp/", "_site/", "log/", "node_modules/"]
+  skip_locations.each do |skip_location|
+    if File.directory? file
+      return true
+    elsif file.include? skip_location
+      return true
+    end
+  end
+
+  return false
+end
+
+files_to_search_in.reject! { |file| ignore_file? file }
+
 def search_in_file(search_term, file, skip_output)
     File.readlines(file).each do |line|
         if line.include? search_term
