@@ -58,7 +58,7 @@ else
 end
 
 def ignore_file?(file)
-  skip_locations = ["bin/", "tmp/", "_site/", "log/", "node_modules/"]
+  skip_locations = ["bin/", "tmp/", "_site/", "log/", "node_modules/", ".git/"]
   skip_locations.each do |skip_location|
     if File.directory? file
       return true
