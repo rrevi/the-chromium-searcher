@@ -6,8 +6,7 @@ require 'async'
 options = {
     # the following at the default options value
     :recursive => false,
-    :method => 'ractor',
-    :skip_output => false
+    :method => 'ractor'
 }
 search_method_options = { 
     'serial' => 'serial',
@@ -24,10 +23,6 @@ option_parser = OptionParser.new do |opts|
 
     opts.on('--method METHOD', search_method_options, 'Method to search by: serial (one file at a time), fiber (multiple files at the same time), or ractor (multiple files at the same time)') do |method|
         options[:method] = method
-    end
-
-    opts.on('--skip-output', 'Do not print to stdout the results of the search (this option is for benchmark runs)') do
-        options[:skip_output] = true
     end
 
     opts.on('-h', '--help', "Prints this help") do
@@ -77,35 +72,35 @@ end
 
 files_to_search_in.reject! { |file| ignore_file? file }
 
-def search_in_file(search_term, file, skip_output)
+def search_in_file(search_term, file)
     File.readlines(file).each do |line|
         if line.include? search_term
-            puts "#{file}: #{line}" unless skip_output
+            puts "#{file}: #{line}"
         end
     end 
 end
 
-def serial_search(search_term, files, skip_output)
+def serial_search(search_term, files)
     files.each do |file|
-        search_in_file search_term, file, skip_output
+        search_in_file search_term, file
     end
 end
 
-def fiber_search(search_term, file, skip_output)
+def fiber_search(search_term, file)
     Async do |task|
-        search_in_file search_term, file, skip_output
+        search_in_file search_term, file
     end
 end
 
-def ractor_search(search_term, files, skip_output)
+def ractor_search(search_term, files)
     files.each do |file|
-        Ractor.new(file, search_term, skip_output) do |file_in_ractor, search_term_in_ractor, skip_outp|
+        Ractor.new(file, search_term) do |file_in_ractor, search_term_in_ractor|
             # we don't re-use the mehod search_in_file here
             # because since every Ractor instance is in it's own thread
             # we cannot access data outside of said thread (like the other thread where main is in)
             File.readlines(file_in_ractor).each do |line|
                 if line.include? search_term_in_ractor
-                    puts "#{file_in_ractor}: #{line}" unless skip_outp
+                    puts "#{file_in_ractor}: #{line}"
                 end
             end
         end
@@ -116,13 +111,13 @@ end
 
 case options[:method]
 when 'serial'
-    serial_search arguments[:search_term], files_to_search_in, options[:skip_output]
+    serial_search arguments[:search_term], files_to_search_in
 when 'fiber'
     Async do
         files_to_search_in.each do |file|
-            fiber_search arguments[:search_term], file, options[:skip_output]
+            fiber_search arguments[:search_term], file
         end
     end
 when 'ractor'
-    ractor_search arguments[:search_term], files_to_search_in, options[:skip_output]
+    ractor_search arguments[:search_term], files_to_search_in
 end
